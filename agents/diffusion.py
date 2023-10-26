@@ -15,7 +15,6 @@ from agents.helpers import (cosine_beta_schedule,
                             Losses)
 from utils.utils import Progress, Silent
 
-
 class Diffusion(nn.Module):
     def __init__(self, state_dim, action_dim, model, max_action,
                  beta_schedule='linear', n_timesteps=100,
@@ -162,6 +161,7 @@ class Diffusion(nn.Module):
 
         x_noisy = self.q_sample(x_start=x_start, t=t, noise=noise)
 
+        print('Diffusion self.model(x_t, t, state)', x_noisy.shape, t.shape, state.shape)
         x_recon = self.model(x_noisy, t, state)
 
         assert noise.shape == x_recon.shape

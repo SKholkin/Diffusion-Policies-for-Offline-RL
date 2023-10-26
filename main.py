@@ -109,7 +109,7 @@ def train_agent(env, state_dim, action_dim, max_action, device, output_dir, args
         logger.record_tabular('Average Episodic Reward', eval_res)
         logger.record_tabular('Average Episodic N-Reward', eval_norm_res)
         logger.dump_tabular()
-
+        
         bc_loss = np.mean(loss_metric['bc_loss'])
         if args.early_stop:
             early_stop = stop_check(metric, bc_loss)

@@ -10,6 +10,7 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 from utils.logger import logger
 
 from agents.diffusion import Diffusion
+from agents.flow_matching import FlowMatching
 from agents.model import MLP
 from agents.helpers import EMA
 
@@ -66,11 +67,15 @@ class Diffusion_QL(object):
                  lr_maxt=1000,
                  grad_norm=1.0,
                  ):
-
+        
         self.model = MLP(state_dim=state_dim, action_dim=action_dim, device=device)
 
-        self.actor = Diffusion(state_dim=state_dim, action_dim=action_dim, model=self.model, max_action=max_action,
-                               beta_schedule=beta_schedule, n_timesteps=n_timesteps,).to(device)
+        # self.actor = Diffusion(state_dim=state_dim, action_dim=action_dim, model=self.model, max_action=max_action,
+        #                        beta_schedule=beta_schedule, n_timesteps=n_timesteps,).to(device)
+
+        self.actor = FlowMatching(state_dim=state_dim, action_dim=action_dim, model=self.model, max_action=max_action,
+                               n_timesteps=n_timesteps).to(device)
+
         self.actor_optimizer = torch.optim.Adam(self.actor.parameters(), lr=lr)
 
         self.lr_decay = lr_decay
@@ -137,8 +142,13 @@ class Diffusion_QL(object):
             self.critic_optimizer.step()
 
             """ Policy Training """
+            # print('Actor training self.actor.loss(action, state)', '\nAction: ', action.shape, '\nstate: ', state.shape)
+
+            # action: N X D_action (6)
+            # state:  N X D_state (17)
             bc_loss = self.actor.loss(action, state)
             new_action = self.actor(state)
+            # print('Generated action: ', new_action.shape)
 
             q1_new_action, q2_new_action = self.critic(state, new_action)
             if np.random.uniform() > 0.5:
@@ -185,12 +195,18 @@ class Diffusion_QL(object):
         return metric
 
     def sample_action(self, state):
+        # return: D_action
         state = torch.FloatTensor(state.reshape(1, -1)).to(self.device)
         state_rpt = torch.repeat_interleave(state, repeats=50, dim=0)
         with torch.no_grad():
+            # print('Sample action: ', '\nState (repeated): ', state_rpt.shape)
+            # state_rpt: N_repeat X D_state
+            # action: N_repeat X D_action
             action = self.actor.sample(state_rpt)
             q_value = self.critic_target.q_min(state_rpt, action).flatten()
+            # print('Generated action: ', action.shape, '\nQvalue: ', q_value.shape)
             idx = torch.multinomial(F.softmax(q_value), 1)
+            # print('Final action: ', action[idx].cpu().data.numpy().flatten().shape)
         return action[idx].cpu().data.numpy().flatten()
 
     def save_model(self, dir, id=None):
