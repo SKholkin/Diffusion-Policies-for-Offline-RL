@@ -58,7 +58,8 @@ def train_agent(env, state_dim, action_dim, max_action, device, output_dir, args
                       lr=args.lr,
                       lr_decay=args.lr_decay,
                       lr_maxt=args.num_epochs,
-                      grad_norm=args.gn)
+                      grad_norm=args.gn, 
+                      is_flow_matching=args.is_flow_matching)
     elif args.algo == 'bc':
         from agents.bc_diffusion import Diffusion_BC as Agent
         agent = Agent(state_dim=state_dim,
@@ -200,6 +201,8 @@ if __name__ == "__main__":
     ### Algo Choice ###
     parser.add_argument("--algo", default="ql", type=str)  # ['bc', 'ql']
     parser.add_argument("--ms", default='offline', type=str, help="['online', 'offline']")
+    parser.add_argument('--is_flow_matching', action=argparse.BooleanOptionalAction, help='Turn on/off policy approximation via flow matching', default=True)
+
     # parser.add_argument("--top_k", default=1, type=int)
 
     # parser.add_argument("--lr", default=3e-4, type=float)

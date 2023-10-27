@@ -66,15 +66,19 @@ class Diffusion_QL(object):
                  lr_decay=False,
                  lr_maxt=1000,
                  grad_norm=1.0,
+                 is_flow_matching=True
                  ):
         
         self.model = MLP(state_dim=state_dim, action_dim=action_dim, device=device)
 
-        self.actor = Diffusion(state_dim=state_dim, action_dim=action_dim, model=self.model, max_action=max_action,
-                               beta_schedule=beta_schedule, n_timesteps=n_timesteps,).to(device)
-
-        self.actor = FlowMatching(state_dim=state_dim, action_dim=action_dim, model=self.model, max_action=max_action,
-                               n_timesteps=n_timesteps).to(device)
+        if not is_flow_matching:
+            print('\nDiffusion Policy\n')
+            self.actor = Diffusion(state_dim=state_dim, action_dim=action_dim, model=self.model, max_action=max_action,
+                                beta_schedule=beta_schedule, n_timesteps=n_timesteps).to(device)
+        else:   
+            print('\nFlow Matching Policy\n')
+            self.actor = FlowMatching(state_dim=state_dim, action_dim=action_dim, model=self.model, max_action=max_action,
+                                n_timesteps=n_timesteps).to(device)
 
         self.actor_optimizer = torch.optim.Adam(self.actor.parameters(), lr=lr)
 
