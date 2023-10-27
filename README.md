@@ -1,3 +1,24 @@
+## Flow Matcing Policies for Offline RL. Skoltech Final Project Reinforcement Learning
+
+Docker: https://hub.docker.com/r/artbash/rl_image
+
+Then run:
+```
+conda activate rl
+git clone https://github.com/SKholkin/Diffusion-Policies-for-Offline-RL
+cd Diffusion-Policies-for-Offline-RL
+```
+
+How to run our experiments:
+
+```
+python main.py --env_name <> --device 0 --ms online --lr_decay --is_flow_matching
+```
+
+References:
+
+
+
 ## Diffusion Policies for Offline RL &mdash; Official PyTorch Implementation
 
 **Diffusion Policies as an Expressive Policy Class for Offline Reinforcement Learning**<br>
