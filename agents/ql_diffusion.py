@@ -70,8 +70,8 @@ class Diffusion_QL(object):
         
         self.model = MLP(state_dim=state_dim, action_dim=action_dim, device=device)
 
-        # self.actor = Diffusion(state_dim=state_dim, action_dim=action_dim, model=self.model, max_action=max_action,
-        #                        beta_schedule=beta_schedule, n_timesteps=n_timesteps,).to(device)
+        self.actor = Diffusion(state_dim=state_dim, action_dim=action_dim, model=self.model, max_action=max_action,
+                               beta_schedule=beta_schedule, n_timesteps=n_timesteps,).to(device)
 
         self.actor = FlowMatching(state_dim=state_dim, action_dim=action_dim, model=self.model, max_action=max_action,
                                n_timesteps=n_timesteps).to(device)

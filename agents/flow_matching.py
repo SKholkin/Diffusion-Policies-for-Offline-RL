@@ -7,7 +7,6 @@ import torch.nn.functional as F
 
 from agents.helpers import (extract,
                             Losses)
-from utils.utils import Progress, Silent
 
 
 class FlowMatching(nn.Module):
@@ -51,9 +50,9 @@ class FlowMatching(nn.Module):
             # must be N X D_action, N, N X D_state
 
             x_t = x_t + self.model(x_t, t, state) * euler_dt
-    
+
         return x_t.clamp_(-self.max_action, self.max_action)  
-    
+
     # ------------------------------------------ training ------------------------------------------#
 
     def loss(self, x_1, state, weights=1.0):
@@ -64,7 +63,6 @@ class FlowMatching(nn.Module):
         # x_1: Data
         # x_0: Gaussian
         x_0 = self.invariant_dist.sample(x_1.shape).to(x_1.device)
-
 
         t = t.reshape([-1, 1])
         x_t = t * x_1 + (1 - t) * x_0
@@ -77,4 +75,3 @@ class FlowMatching(nn.Module):
 
     def forward(self, state, *args, **kwargs):
         return self.sample(state, *args, **kwargs)
-

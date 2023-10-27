@@ -64,7 +64,7 @@ class Diffusion(nn.Module):
                              betas * np.sqrt(alphas_cumprod_prev) / (1. - alphas_cumprod))
         self.register_buffer('posterior_mean_coef2',
                              (1. - alphas_cumprod_prev) * np.sqrt(alphas) / (1. - alphas_cumprod))
-
+        
         self.loss_fn = Losses[loss_type]()
 
     # ------------------------------------------ sampling ------------------------------------------#
