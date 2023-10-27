@@ -11,11 +11,44 @@ cd Diffusion-Policies-for-Offline-RL
 
 How to run our experiments:
 
+For Flow Matching
 ```
-python main.py --env_name <> --device 0 --ms online --lr_decay --is_flow_matching
+python main.py --env_name <env_name> --device <gpu_name> --ms online --lr_decay --is_flow_matching
 ```
 
+For Diffusion model
+```
+python main.py --env_name <env_name> --device <gpu_name> --ms online --lr_decay --no-is_flow_matching
+```
+
+Computational resources:
+
+Requires a bit of GPU resources (up to 2GB VRAM)
+Training length is about 5-10 hours for different environments on NVIDIA A40 and Intel Xeon 16 cores
+
+Notes:
+gym environments are tested with our docker environments while AntMaze, Adroit, Kitchen haven't been tested and you can have problems launching them
+
+Safe environments:
+* halfcheetah-medium-v2
+* hopper-medium-v2
+* walker2d-medium-v2
+* halfcheetah-medium-replay-v2
+* hopper-medium-replay-v2
+* walker2d-medium-replay-v2
+* halfcheetah-medium-expert-v2
+* hopper-medium-expert-v2
+* walker2d-medium-expert-v2
+
 References:
+
+[1] Wang, Z., Hunt, J.J., & Zhou, M. (2022). Diffusion Policies as an Expressive Policy Class for Offline Reinforcement Learning. ArXiv, abs/2208.06193.
+
+[2] Janner, M., Du, Y., Tenenbaum, J.B., & Levine, S. (2022). Planning with Diffusion for Flexible Behavior Synthesis. International Conference on Machine Learning.
+
+[3] Song, Y., Sohl-Dickstein, J.N., Kingma, D.P., Kumar, A., Ermon, S., & Poole, B. (2020). Score-Based Generative Modeling through Stochastic Differential Equations. ArXiv, abs/2011.13456.
+
+[4] Lipman, Y., Chen, R.T., Ben-Hamu, H., Nickel, M., & Le, M. (2022). Flow Matching for Generative Modeling. ArXiv, abs/2210.02747.
 
 
 
